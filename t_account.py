@@ -117,9 +117,9 @@ class TAcntMerchandiseInventory(TAcntInventory):
 class TAcntSupplies(TAcntAsset):
     def __init__(self):
         TAcntAsset.__init__(self)
-        self._t_account_type["2nd"] = SUP
-        self._begin.set_account_type("2nd", SUP)
-        self._ending.set_account_type("2nd", SUP)
+        self._t_account_type["2nd"] = SUPPLY
+        self._begin.set_account_type("2nd", SUPPLY)
+        self._ending.set_account_type("2nd", SUPPLY)
 
 
 class TAcntPrepaidExpenses(TAcntAsset):
@@ -178,6 +178,15 @@ class TAcntAccountsPayable(TAcntLiability):
         self._ending.set_account_type(SECOND, AP)
 
 
+class TAcntUnearnedRevenue(TAcntLiability):
+    def __init__(self):
+        TAcntLiability.__init__(self)
+        self._t_account_type[SECOND] = UR
+        self._begin.set_account_type(SECOND, UR)
+        self._ending.set_account_type(SECOND, UR)
+
+
+
 class TAcntOwnersEquity(TAccount):
     def __init__(self):
         TAccount.__init__(self)
@@ -222,6 +231,14 @@ class TAcntSalariesExpense(TAcntExpense):
         self._ending.set_account_type(SECOND, SALA_EXP)
 
 
+class TAcntWagesExpense(TAcntExpense):
+    def __init__(self):
+        TAcntExpense.__init__(self)
+        self._t_account_type[SECOND] = WAG_EXP
+        self._begin.set_account_type(SECOND, WAG_EXP)
+        self._ending.set_account_type(SECOND, WAG_EXP)
+
+
 class TAcntRentExpense(TAcntExpense):
     def __init__(self):
         TAcntExpense.__init__(self)
@@ -231,11 +248,12 @@ class TAcntRentExpense(TAcntExpense):
 
 
 t_accounts_dict = {A: TAcntAsset, CASH: TAcntCash, AR: TAcntAccountsReceivable, INV: TAcntInventory,
-                   MERCHANT_INV: TAcntMerchandiseInventory, SUP: TAcntSupplies, PRE_EXP: TAcntPrepaidExpenses,
+                   MERCHANT_INV: TAcntMerchandiseInventory, SUPPLY: TAcntSupplies, PRE_EXP: TAcntPrepaidExpenses,
                    LAND: TAcntLand, BUILD: TAcntBuildings, EQUIP: TAcntEquipment, GOODWILL: TAcntGoodwill,
                    L: TAcntLiability, AP: TAcntAccountsPayable, OE: TAcntOwnersEquity, REV: TAcntRevenue,
                    INT_INVST: TAcntInitialInvestment, E: TAcntExpense, COGS: TAcntCostOfGoodsSold,
-                   SALA_EXP: TAcntSalariesExpense, RENT_EXP: TAcntRentExpense}
+                   SALA_EXP: TAcntSalariesExpense, RENT_EXP: TAcntRentExpense, WAG_EXP: TAcntWagesExpense,
+                   UR: TAcntUnearnedRevenue}
 
 
 if __name__ == "__main__":

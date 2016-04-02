@@ -106,3 +106,13 @@ class Settings:
 
     def get_inv_mth(self):
         return self._inventory_mtd
+
+
+key_words = ["purchase", "account", "on", "office", "supply", 'provide', 'service', 'receive', 'cash', 'pay', 'paid',
+             'wage', "advance", "rent", "in", "investment", "payment"]
+key_words_dict = {"purchase": "purchase", "account": "account", "on": "on", "office": "office", "supply": "supply",
+                  'provide': 'provide', 'service': 'service',
+                  'receive': 'receive', 'cash': 'cash', 'pay': 'pay', 'paid': 'pay', 'wage': 'wage',
+                  "advance": "advance", "rent": "rent", "in": "in", "investment": "investment", "payment": "payment"}
+key_phrase = ['purchase office supply',  "receive investment", 'provide service', "receive advance payment",
+              'pay wage', 'pay cash', 'on account', "pay advance rent", "in cash", "receive cash"]

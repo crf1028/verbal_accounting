@@ -26,13 +26,25 @@ def trans_cash_increase(glr_instance, num, com):
 
 
 def trans_cash_neutral(glr_instance, num, com):
-    num = round(float(num), 2)
+    lst = glr_instance.get_content()
+    temp_acnt = accounts_dict[CASH](0)
+    for i in lst:
+        temp_acnt -= i
+    if temp_acnt.get_amount() > 0:
+        num = abs(round(float(num), 2))
+    else:
+        num = -abs(round(float(num), 2))
     general_trans(glr_instance, num, com, CASH)
 
 
 def trans_revenue_increase(glr_instance, num, com):
     num = abs(round(float(num), 2))
     general_trans(glr_instance, num, com, REV)
+
+
+def trans_unearned_revenue_increase(glr_instance, num, com):
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, UR)
 
 
 def trans_cogs_increase(glr_instance, num, com):
@@ -70,6 +82,21 @@ def trans_rent_exp_increase(glr_instance, num, com):
     general_trans(glr_instance, num, com, RENT_EXP)
 
 
+def trans_supply_increase(glr_instance, num, com):
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, SUPPLY)
+
+
+def trans_wage_expense_increase(glr_instance, num, com):
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, WAG_EXP)
+
+
+def trans_prepaid_exp_increase(glr_instance, num, com):
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, PRE_EXP)
+
+
 def general_trans(glr_instance, num, com, account_code):
     temp_acnt = accounts_dict[account_code](num)
     glr_instance.add_dr_cr_content(temp_acnt)
@@ -98,12 +125,17 @@ def extra_sell_inventory(com, lst):
         com.book.add_record(tem_glr)
 
 
-temp_dict = {"by cash": trans_cash_neutral, "receive cash": trans_cash_increase, AP: trans_accounts_payable_neutral,
+temp_dict = {"receive cash": trans_cash_increase, AP: trans_accounts_payable_neutral,
              "receive investment": trans_initial_invest_increase, CASH: trans_cash_neutral,
              "borrow from bank": trans_accounts_payable_increase, "purchase equipment": trans_equipment_increase,
              "paid in cash": trans_cash_decrease, "purchase merchandise": trans_merchant_inv_increase,
              "on credit": trans_accounts_payable_increase, "sell merchandise": trans_revenue_increase,
-             "pay salaries": trans_salary_exp_increase, "pay rent": trans_rent_exp_increase}
+             "pay salaries": trans_salary_exp_increase, "pay rent": trans_rent_exp_increase,
+             "purchase office supply": trans_supply_increase, "on account": trans_accounts_payable_increase,
+             'provide service': trans_revenue_increase, 'pay wage': trans_wage_expense_increase,
+             "pay cash": trans_cash_decrease, "pay advance rent": trans_prepaid_exp_increase,
+             "in cash": trans_cash_neutral, "receive": trans_cash_neutral,
+             "receive advance payment": trans_unearned_revenue_increase}
 extra_dict = {"purchase merchandise": extra_add_inventory, "sell merchandise": extra_sell_inventory}
 
 
@@ -134,8 +166,10 @@ def handler(glr, com):
         return False
 
 
-handler_dict = {REV: [REV, CASH, AR]}
+handler_dict = {REV: [REV, CASH, AR], WAG_EXP: [WAG_EXP, CASH], PRE_EXP: [PRE_EXP, CASH], UR: [UR, CASH]}
 
+
+# TODO return all possibilities
 
 
 # def check_pos_neg(num, pos_or_neg):

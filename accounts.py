@@ -101,7 +101,6 @@ class Asset(Account):
     def __init__(self, amount):
         Account.__init__(self, amount)
         self._account_type["main"] = A
-# Self.transe_id?? Need more thoughts don't think so
 
 
 class Cash(Asset):
@@ -126,13 +125,12 @@ class MerchandiseInventory(Inventory):
     def __init__(self, amount):
         Inventory.__init__(self, amount)
         self._account_type["3rd"] = MERCHANT_INV
-    # def sell(self, how2pay, acct_method):         # maybe interact with different table like inventory customer
 
 
 class Supplies(Asset):
     def __init__(self, amount):
         Asset.__init__(self, amount)
-        self._account_type["2nd"] = SUP
+        self._account_type["2nd"] = SUPPLY
 
 
 class PrepaidExpenses(Asset):
@@ -253,18 +251,24 @@ class RentExpense(Expense):
         self._account_type["2nd"] = RENT_EXP
 
 
-class CostOfGoodsSold(Expense):  # passive account
+class WagesExpense(Expense):
+    def __init__(self, amount):
+        Expense.__init__(self, amount)
+        self._account_type["2nd"] = WAG_EXP
+
+
+class CostOfGoodsSold(Expense):
     def __init__(self, amount):
         Expense.__init__(self, amount)
         self._account_type["2nd"] = COGS
 
 
 accounts_dict = {A: Asset, CASH: Cash, AR: AccountsReceivable, INV: Inventory, MERCHANT_INV: MerchandiseInventory,
-                 SUP: Supplies, PRE_EXP: PrepaidExpenses, LAND: Land, BUILD: Buildings, EQUIP: Equipment,
+                 SUPPLY: Supplies, PRE_EXP: PrepaidExpenses, LAND: Land, BUILD: Buildings, EQUIP: Equipment,
                  GOODWILL: Goodwill, L: Liability, AP: AccountsPayable, NOTE_P: NotesPayable,
                  SALA_P: SalariesPayable, WAG_P: WagesPayable, INT_P: InterestPayable, I_TAX_P: IncomeTaxesPayable,
                  UR: UnearnedRevenue, OE: OwnersEquity, REV: Revenue, INT_INVST: InitialInvestment, E: Expense,
-                 COGS: CostOfGoodsSold, SALA_EXP: SalariesExpense, RENT_EXP: RentExpense}
+                 COGS: CostOfGoodsSold, SALA_EXP: SalariesExpense, RENT_EXP: RentExpense, WAG_EXP: WagesExpense}
 
 
 if __name__ == "__main__":
