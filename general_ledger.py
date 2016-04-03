@@ -20,10 +20,18 @@ class GeneralLedgerBook:        # TODO maybe validate before added to book
             except:
                 self._content[today] = [glr]
 
-    def get_contant(self):
+    def get_content(self):
         for item in self._content.values():
             for j in item:
                 print j
+
+    def django_value(self):
+        to_return = ''
+        for item in self._content.values():
+            for j in item:
+                to_return += str(j)
+                to_return += '\n'
+        return to_return
 
 
 class GeneralLedgerRecord:

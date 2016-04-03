@@ -97,6 +97,34 @@ def trans_prepaid_exp_increase(glr_instance, num, com):
     general_trans(glr_instance, num, com, PRE_EXP)
 
 
+def trans_on_account(glr_instance, num, com):
+    lst = glr_instance.get_content()
+    if len(lst) == 1:
+        if lst[0].get_account_type(MAIN)[MAIN] == A:
+            if lst[0].get_amount() > 0:
+                trans_accounts_payable_increase(glr_instance, num, com)
+            elif lst[0].get_amount() < 0:
+                trans_accounts_receivable_increase(glr_instance, num, com)
+            else:
+                raise ValueError
+        elif lst[0].get_account_type(MAIN)[MAIN] == OE:
+            if lst[0].get_amount() > 0:
+                trans_revenue_increase(glr_instance, num, com)
+            else:
+                raise ValueError
+        else:
+            raise ValueError
+    else:
+        handler(glr_instance, com)
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, PRE_EXP)
+
+
+def trans_accounts_receivable_increase(glr_instance, num, com):
+    num = abs(round(float(num), 2))
+    general_trans(glr_instance, num, com, AR)
+
+
 def general_trans(glr_instance, num, com, account_code):
     temp_acnt = accounts_dict[account_code](num)
     glr_instance.add_dr_cr_content(temp_acnt)
@@ -129,7 +157,7 @@ temp_dict = {"receive cash": trans_cash_increase, AP: trans_accounts_payable_neu
              "receive investment": trans_initial_invest_increase, CASH: trans_cash_neutral,
              "borrow from bank": trans_accounts_payable_increase, "purchase equipment": trans_equipment_increase,
              "paid in cash": trans_cash_decrease, "purchase merchandise": trans_merchant_inv_increase,
-             "on credit": trans_accounts_payable_increase, "sell merchandise": trans_revenue_increase,
+             "sell merchandise": trans_revenue_increase,
              "pay salaries": trans_salary_exp_increase, "pay rent": trans_rent_exp_increase,
              "purchase office supply": trans_supply_increase, "on account": trans_accounts_payable_increase,
              'provide service': trans_revenue_increase, 'pay wage': trans_wage_expense_increase,

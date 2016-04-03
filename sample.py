@@ -1,6 +1,7 @@
 from misc_data import Company, key_words, key_words_dict, key_phrase
 from fuzzywuzzy import fuzz
 import copy
+import pickle
 
 tem_com = Company("Orange Inc.", "Cupertino, CA", "1 (800) 692-7755")
 tem_com.settings.set_inv_mtd("WA")
@@ -40,10 +41,6 @@ def process_input(input_str):
             num_lst.extend([j.replace('$', '')])
             str_lst.pop(i)
             str_lst.insert(i, '')
-        elif j.isdigit():
-            num_lst.extend([j])
-            str_lst.pop(i)
-            str_lst.insert(i, '')
     key_words_lst2store = []
     remove_empty(str_lst)
 
@@ -56,7 +53,7 @@ def process_input(input_str):
                 break
     remove_empty(str_lst)
 
-    print key_words_lst2store
+    # print key_words_lst2store
     key_phrase_lst2store = []
     while key_words_lst2store:
         for i in key_phrase:
@@ -81,6 +78,17 @@ def process_input(input_str):
         else:
             key_words_lst2store.pop(0)
 
+    # extra_lst = []            TODO to be completed
+    # if "purchase merchandise" in key_phrase_lst2store:
+    #     for i in key_words_lst2store:
+    #         if "Inv" in i:
+    #             extra_lst.extend([i])
+    #             for k in key_words_lst2store:
+    #                 j = k.replace(',', '')
+    #                 if j.isdigit():
+    #                     extra_lst.extend()
+    #                     extra_lst.extend([j])
+
     final_result = ''
     for i in key_phrase_lst2store + num_lst:
         final_result += i
@@ -97,25 +105,28 @@ def remove_empty(lst):
             lst.pop(i)
 
 
-input_lst = ["Company A receive investment of $10,000 in cash.",
+input_lst = ["Company A receive investment of $100,000 in cash.",
+             "Purchase equipment for $20,000 in cash.",
              "An amount of $36,000 was paid as advance rent for three months.",
              "Purchased office supplies costing $17,600 on account.",
              "Provided services to its customers and received $28,500 in cash.",
              "Paid wages to its employees for first two weeks of January, aggregating $19,100.",
              "Received $4,000 as an advance payment from customers.",
-             "Purchased office supplies costing $5,200 on account.",
-             "Paid wages to its employees for the third and fourth week of January: $19,100."
+             "Purchased office supplies costing $5,200 on account."
              ]
 
 for item in input_lst:
     input_in = process_input(item)
-    print input_in
+    # print input_in
     tem_com.make_entry_n_add2book_n_tacnts(input_in)
 
-tem_com.book.get_contant()
-tem_com.t_accounts.get_content()
+print tem_com.book.django_value()
+print tem_com.t_accounts.django_value()
 print tem_com.inv_table
+print tem_com.get_income_statement('str')
+income = tem_com.get_income_statement('num')
+print tem_com.get_balance_sheet(income)
 
-
+# pickle.dump(tem_com, open("save.p", "wb"))
 
 
