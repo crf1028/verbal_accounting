@@ -1,6 +1,6 @@
 from misc_data import Company, key_words, key_words_dict, key_phrase
-from fuzzywuzzy import fuzz
 import copy
+import re
 import pickle
 
 tem_com = Company("Orange Inc.", "Cupertino, CA", "1 (800) 692-7755")
@@ -35,6 +35,30 @@ def process_input(input_str):
     str_lst = input_str.split(' ')
     num_lst = []
 
+    extra_lst = []
+    temp_unit_p_lst = []
+    if re.search(r'urchase.*merchandise', input_str):
+        for i in str_lst:
+            if re.search(r'Inv\d{3}', i):
+                extra_lst.extend([i])
+                str_lst.remove(i)
+                break
+        for i in str_lst:
+            if i.isdigit():
+                extra_lst.extend([int(i)])
+                str_lst.remove(i)
+                break
+        for i in str_lst:
+            if i.startswith("$"):
+                temp_unit_p_lst.extend([int(i.replace('$','').replace(',',''))])
+        if len(extra_lst) == 1:
+            extra_lst.extend([max(temp_unit_p_lst)/min(temp_unit_p_lst)])
+        if len(temp_unit_p_lst) == 2:       # TODO check for input accuracy
+            str_lst.remove("$"+'{0:,}'.format(min(temp_unit_p_lst)))
+            extra_lst[1:1] = [min(temp_unit_p_lst)]
+        elif len(temp_unit_p_lst) == 1:
+            extra_lst[1:1] = [int(temp_unit_p_lst[0]) / extra_lst[1]]
+
     for i in range(len(str_lst)):
         j = str_lst[i].replace(',', '')
         if j[0] == "$":
@@ -45,12 +69,13 @@ def process_input(input_str):
     remove_empty(str_lst)
 
     for i in range(len(str_lst)):
-        for j in key_words:
-            if fuzz.ratio(str_lst[i], j) > 70:
-                key_words_lst2store.extend([key_words_dict[j]])
-                str_lst.pop(i)
-                str_lst.insert(i, '')
-                break
+        if str_lst[i]:
+            for j in key_words:
+                if str_lst[i].lower().startswith(j):
+                    key_words_lst2store.extend([key_words_dict[j]])
+                    str_lst.pop(i)
+                    str_lst.insert(i, '')
+                    break
     remove_empty(str_lst)
 
     # print key_words_lst2store
@@ -78,17 +103,6 @@ def process_input(input_str):
         else:
             key_words_lst2store.pop(0)
 
-    # extra_lst = []            TODO to be completed
-    # if "purchase merchandise" in key_phrase_lst2store:
-    #     for i in key_words_lst2store:
-    #         if "Inv" in i:
-    #             extra_lst.extend([i])
-    #             for k in key_words_lst2store:
-    #                 j = k.replace(',', '')
-    #                 if j.isdigit():
-    #                     extra_lst.extend()
-    #                     extra_lst.extend([j])
-
     final_result = ''
     for i in key_phrase_lst2store + num_lst:
         final_result += i
@@ -96,7 +110,10 @@ def process_input(input_str):
     if final_result[-1] == ',':
         final_result = final_result[:-1]
 
-    return final_result
+    if not extra_lst:
+        return final_result
+    else:
+        return final_result, extra_lst
 
 
 def remove_empty(lst):
@@ -112,13 +129,18 @@ input_lst = ["Company A receive investment of $100,000 in cash.",
              "Provided services to its customers and received $28,500 in cash.",
              "Paid wages to its employees for first two weeks of January, aggregating $19,100.",
              "Received $4,000 as an advance payment from customers.",
-             "Purchased office supplies costing $5,200 on account."
+             "Purchased office supplies costing $5,200 on account.",
+             "Purchased merchandise Inv001 for $6,000 on account at $10 per unit."
              ]
 
 for item in input_lst:
+    print item
     input_in = process_input(item)
-    # print input_in
-    tem_com.make_entry_n_add2book_n_tacnts(input_in)
+    print input_in
+    if len(input_in) == 2:
+        tem_com.make_entry_n_add2book_n_tacnts(input_in[0], extra_lst=input_in[1])
+    else:
+        tem_com.make_entry_n_add2book_n_tacnts(input_in)
 
 print tem_com.book.django_value()
 print tem_com.t_accounts.django_value()

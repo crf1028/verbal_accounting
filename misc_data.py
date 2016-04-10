@@ -35,11 +35,10 @@ class Company:
                 if extra_lst:
                     com.add_extra([i[0] for i in lst], extra_lst)
             else:
-                print tem_glr
                 raise ValueError
 
     def add_extra(self, lst, extra_lst):
-        extra = split_extra_input(extra_lst)
+        extra = extra_lst
         for i in lst:
             try:
                 extra_dict[i](self, extra)
@@ -100,7 +99,7 @@ class Company:
 
 
 def split_input(str_input):
-    temp_lst = del_space(str_input.split(','))
+    temp_lst = [i.lstrip() for i in str_input.split(',')]
     str_lst = []
     num_lst = []
     for i in temp_lst:
@@ -119,14 +118,7 @@ def split_input(str_input):
 
 
 def split_extra_input(str_input):
-    return del_space(str_input.split(','))
-
-
-def del_space(lst_2_process):
-    for i in range(len(lst_2_process)):
-        if lst_2_process[i][0] == " ":
-            lst_2_process[i] = lst_2_process[i][1:]
-    return lst_2_process
+    return [i.lstrip() for i in str_input.split(',')]
 
 
 class CustomerTable:
@@ -160,13 +152,14 @@ class Settings:
         return self._inventory_mtd
 
 
-key_words = ["purchase", "account", "on", "office", "supply", 'provide', 'service', 'receive', 'cash', 'pay', 'paid',
-             'wage', "advance", "rent", "in", "investment", "payment", "equipment", "buy", "credit", "merchandise"]
-key_words_dict = {"purchase": "purchase", "account": "account", "on": "on", "office": "office", "supply": "supply",
+key_words = ["purchase", "account", "suppl", 'provide', 'service', 'receive', "advance", "investment",
+             "payment", "equipment", "credit", "merchandise", 'wage', "rent", 'paid', "buy", 'cash', 'pay', "on", "in"]
+key_words_dict = {"purchase": "purchase", "account": "account", "on": "on", "office": "office", "suppl": "supply",
                   'provide': 'provide', 'service': 'service', "equipment": "equipment", "buy": "purchase",
-                  'receive': 'receive', 'cash': 'cash', 'pay': 'pay', 'paid': 'pay', 'wage': 'wage', "credit": "account",
+                  'receive': 'receive', 'cash': 'cash', 'pay': 'pay', 'paid': 'pay', 'wage': 'wage',
+                  "credit": "account",
                   "advance": "advance", "rent": "rent", "in": "in", "investment": "investment", "payment": "payment",
                   "merchandise": "merchandise"}
-key_phrase = ['purchase office supply', "purchase equipment", "receive investment", 'provide service',
+key_phrase = ['purchase supply', "purchase equipment", "receive investment", 'provide service',
               "receive advance payment", "purchase merchandise",
-              'pay wage', 'pay cash', 'on account', "pay advance rent", "in cash", "receive cash"]
+              'pay wage', 'pay cash', 'on account', "pay advance rent", "pay rent", "in cash", "receive cash"]

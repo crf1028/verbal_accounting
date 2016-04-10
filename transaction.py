@@ -159,7 +159,7 @@ temp_dict = {"receive cash": trans_cash_increase, AP: trans_accounts_payable_neu
              "paid in cash": trans_cash_decrease, "purchase merchandise": trans_merchant_inv_increase,
              "sell merchandise": trans_revenue_increase,
              "pay salaries": trans_salary_exp_increase, "pay rent": trans_rent_exp_increase,
-             "purchase office supply": trans_supply_increase, "on account": trans_accounts_payable_increase,
+             "purchase supply": trans_supply_increase, "on account": trans_accounts_payable_increase,
              'provide service': trans_revenue_increase, 'pay wage': trans_wage_expense_increase,
              "pay cash": trans_cash_decrease, "pay advance rent": trans_prepaid_exp_increase,
              "in cash": trans_cash_neutral, "receive": trans_cash_neutral,
