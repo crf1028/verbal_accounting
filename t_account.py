@@ -3,7 +3,7 @@ from constant import *
 from datetime import datetime
 
 
-class TAccountCollection:       # income statement & other maybe
+class TAccountCollection:
     def __init__(self, owner=None):
         self._open_date = datetime.now().strftime('%Y-%m-%d %H:%M')
         self._close_date = None
@@ -13,25 +13,15 @@ class TAccountCollection:       # income statement & other maybe
             self.content[key] = value()
 
     def __str__(self):
-        return "Date Opened: %r \nDate Closed: %r\nOwner: %r \n" % (self._open_date, self._close_date, self._owner.name)
+        to_return = '\n'
+        for item in self.content.values():
+            to_return += item.get_ending_balance()
+        return "Date Opened: %s \nDate Closed: %s\nOwner: %s\n" % (self._open_date, self._close_date, self._owner.name) + to_return
 
-    # def add_tacnt(self, name, tacnt):
-    #     try:
-    #         self.content[name]
-    #     except:
-    #         self.content[name] = tacnt         # avoid multiple tacnts
-
-    def get_content(self):
-        for key, value in self.content.items():
-            if value.get_balance() != 0:
-                print "%s: %d\n" % (key, value.get_balance())
-
-    def django_value(self):
-        to_return = ''
-        for key, value in self.content.items():
-            if value.get_balance() != 0:
-                to_return += "%20s: %20d\n" % (key, value.get_balance())
-        return to_return
+    # def get_content(self):
+    #     for key, value in self.content.items():
+    #         if value.get_balance() != 0:
+    #             print "%s: %d\n" % (key, value.get_balance())
 
 
 class TAccount:
@@ -41,17 +31,34 @@ class TAccount:
         self._begin = None
         self._ending = None
         self._name = "none"
-        self._t_account_type = {"main": "none", "2nd": "none", "3rd": None}
+        self._t_account_type = {"main": "none", "2nd": None, "3rd": None}
+
+    def __str__(self):
+        pass
+
+    def __nonzero__(self):
+        return bool(self._ending)
+
+    def get_ending_balance(self):
+        if self:
+            if self._t_account_type[THIRD]:
+                return "{: <25}{:>15,.2f}\n".format(self._t_account_type[THIRD], self._ending.get_amount())
+            elif self._t_account_type[SECOND]:
+                return "{: <25}{:>15,.2f}\n".format(self._t_account_type[SECOND], self._ending.get_amount())
+            elif self._t_account_type[MAIN]:
+                return "{: <25}{:>15,.2f}\n".format(self._t_account_type[MAIN], self._ending.get_amount())
+        else:
+            return ''
 
     def add(self, acnt):            # maybe could be better
         if isinstance(acnt, Account):
             # acnt_type = acnt.get_account_type()     # check all types here, can be modified to only check some types
-            if acnt.get_account_type()[MAIN] == self._t_account_type[MAIN]:
+            if acnt.get_account_type()[0] == self._t_account_type[MAIN]:
                 if acnt.check_ledger_side() == "dr":
                     self._dr_side.extend([acnt])
                 elif acnt.check_ledger_side() == "cr":
                     self._cr_side.extend([acnt])
-                self._ending.set_amount(self._ending.get_amount() + acnt.get_amount())
+                self._ending = self._ending + acnt
             else:
                 raise ValueError
         else:
@@ -66,19 +73,19 @@ class TAccount:
     def get_balance(self):
         return self._ending.get_amount()
 
-    def get_account_type(self, layer=None):
-        if layer is not None:
-            type2show = layer.split('_')
-            dict2return = {}
-            try:
-                for item in type2show:
-                    dict2return[item] = self._t_account_type[item]
-            except KeyError:
-                raise KeyError
-            else:
-                return dict2return
-        else:
-            return self._t_account_type
+    # def get_account_type(self, layer=None):
+    #     if layer is not None:
+    #         type2show = layer.split('_')
+    #         dict2return = {}
+    #         try:
+    #             for item in type2show:
+    #                 dict2return[item] = self._t_account_type[item]
+    #         except KeyError:
+    #             raise KeyError
+    #         else:
+    #             return dict2return
+    #     else:
+    #         return self._t_account_type
 
     def get_ending_acnt(self):
         return self._ending

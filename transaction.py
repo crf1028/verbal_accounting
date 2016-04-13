@@ -100,14 +100,14 @@ def trans_prepaid_exp_increase(glr_instance, num, com):
 def trans_on_account(glr_instance, num, com):
     lst = glr_instance.get_content()
     if len(lst) == 1:
-        if lst[0].get_account_type(MAIN)[MAIN] == A:
+        if lst[0].get_account_type()[0] == A:
             if lst[0].get_amount() > 0:
                 trans_accounts_payable_increase(glr_instance, num, com)
             elif lst[0].get_amount() < 0:
                 trans_accounts_receivable_increase(glr_instance, num, com)
             else:
                 raise ValueError
-        elif lst[0].get_account_type(MAIN)[MAIN] == OE:
+        elif lst[0].get_account_type()[0] == OE:
             if lst[0].get_amount() > 0:
                 trans_revenue_increase(glr_instance, num, com)
             else:
@@ -128,7 +128,7 @@ def trans_accounts_receivable_increase(glr_instance, num, com):
 def general_trans(glr_instance, num, com, account_code):
     temp_acnt = accounts_dict[account_code](num)
     glr_instance.add_dr_cr_content(temp_acnt)
-    acnt_code_lst = temp_acnt.get_account_type().values()
+    acnt_code_lst = temp_acnt.get_account_type()
     for i in acnt_code_lst:
         if i is not None:
             com.t_accounts.content[i].add(temp_acnt)
@@ -168,7 +168,7 @@ extra_dict = {"purchase merchandise": extra_add_inventory, "sell merchandise": e
 
 
 def handler(glr, com):
-    acnts_type_lst = glr.get_accounts_type(SECOND)
+    acnts_type_lst = glr.get_accounts_type()
     acnts_lst = glr.get_content()
     missing_acnt_type = None
     for item in handler_dict.values():
@@ -185,7 +185,7 @@ def handler(glr, com):
         for item in acnts_lst:
             missing_acnt -= item
         glr.add_dr_cr_content(missing_acnt)
-        acnt_code_lst = missing_acnt.get_account_type().values()
+        acnt_code_lst = missing_acnt.get_account_type()
         for i in acnt_code_lst:
             if i is not None:
                 com.t_accounts.content[i].add(missing_acnt)

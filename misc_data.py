@@ -20,7 +20,6 @@ class Company:
         return "Company Name: %r \nCompany Address: %r\nCompany Tel: %r \n" % (self.name, self.address, self.tel)
 
     def make_entry_n_add2book_n_tacnts(com, lst, extra_lst=None):
-        lst = split_input(lst)
         tem_glr = GeneralLedgerRecord()
         for (i, j) in lst:
             temp_dict[i](tem_glr, j, com)
@@ -58,7 +57,7 @@ class Company:
         other_income_expense = 0
         net_income = operating_income - other_income_expense
         if str_or_num == 'str':
-            return "Income Statement\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n" % (
+            return "Income Statement\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <30}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <30}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <30}{: >15,.2f}\n".format(
                 "sales revenue", sales_revenue, COGS, cost_of_goods_sold, "gross profit", gross_profit, "operating enpense",
                 operating_expense, "operating income", operating_income, "other income(expense)", other_income_expense,
                 "net income", net_income)
@@ -88,8 +87,8 @@ class Company:
 
         total_l_n_oe = total_liability + total_owners_equity
 
-        return "Balance Sheet\nAssets\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n" \
-               "%20s:%20s\n\nLiability and Owner's Equity\n%20s:%20s\n%20s:%20s\n%20s:%20s\n\n%20s:%20s\n%20s:%20s\n%20s:%20s\n%20s:%20s\n" % (
+        return "Balance Sheet\nAssets\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n" \
+               "{: <30}{: >15,.2f}\n\nLiability and Owner's Equity\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <30}{: >15,.2f}\n\n{: <25}{: >15,.2f}\n{: <25}{: >15,.2f}\n{: <30}{: >15,.2f}\n{: <30}{: >15,.2f}\n".format(
                    "cash and equivalents", cash_n_cash_equivalents, AR, accounts_receivable, PRE_EXP, pre_paid_expense,
                    INV, inventory, SUPPLY, supplies, "current assets", current_asset, "PP&E", pp_n_e, GOODWILL,
                    good_will, "total assets", total_assets, AP, accounts_payable, UR, unearned_revenue,
@@ -98,27 +97,27 @@ class Company:
                    "total liability and oe", total_l_n_oe)
 
 
-def split_input(str_input):
-    temp_lst = [i.lstrip() for i in str_input.split(',')]
-    str_lst = []
-    num_lst = []
-    for i in temp_lst:
-        if i.isdigit():
-            num_lst.extend([i])
-        else:
-            str_lst.extend([i])
-    temp_lst = []
-    if len(num_lst) == 1:
-        for i in str_lst:
-            temp_lst.extend([(i, num_lst[0])])
-    else:
-        for i, j in zip(str_lst, num_lst):
-            temp_lst.extend([(i, j)])
-    return temp_lst
-
-
-def split_extra_input(str_input):
-    return [i.lstrip() for i in str_input.split(',')]
+# def split_input(str_input):
+#     temp_lst = [i.lstrip() for i in str_input.split(',')]
+#     str_lst = []
+#     num_lst = []
+#     for i in temp_lst:
+#         if i.isdigit():
+#             num_lst.extend([i])
+#         else:
+#             str_lst.extend([i])
+#     temp_lst = []
+#     if len(num_lst) == 1:
+#         for i in str_lst:
+#             temp_lst.extend([(i, num_lst[0])])
+#     else:
+#         for i, j in zip(str_lst, num_lst):
+#             temp_lst.extend([(i, j)])
+#     return temp_lst
+#
+#
+# def split_extra_input(str_input):
+#     return [i.lstrip() for i in str_input.split(',')]
 
 
 class CustomerTable:
@@ -152,14 +151,14 @@ class Settings:
         return self._inventory_mtd
 
 
-key_words = ["purchase", "account", "suppl", 'provide', 'service', 'receive', "advance", "investment",
-             "payment", "equipment", "credit", "merchandise", 'wage', "rent", 'paid', "buy", 'cash', 'pay', "on", "in"]
+key_words = ["purchase", "account", "merchandise", "investment", "suppl", 'provide', 'service', 'receive', "advance",
+             "payment", "equipment", "credit", "sell", "sold", 'wage', "rent", 'paid', "buy", 'cash', 'pay', "on", "in"]
 key_words_dict = {"purchase": "purchase", "account": "account", "on": "on", "office": "office", "suppl": "supply",
                   'provide': 'provide', 'service': 'service', "equipment": "equipment", "buy": "purchase",
                   'receive': 'receive', 'cash': 'cash', 'pay': 'pay', 'paid': 'pay', 'wage': 'wage',
-                  "credit": "account",
+                  "credit": "account", "sell": "sell", "sold": "sell",
                   "advance": "advance", "rent": "rent", "in": "in", "investment": "investment", "payment": "payment",
                   "merchandise": "merchandise"}
 key_phrase = ['purchase supply', "purchase equipment", "receive investment", 'provide service',
-              "receive advance payment", "purchase merchandise",
+              "receive advance payment", "purchase merchandise", "sell merchandise",
               'pay wage', 'pay cash', 'on account', "pay advance rent", "pay rent", "in cash", "receive cash"]
